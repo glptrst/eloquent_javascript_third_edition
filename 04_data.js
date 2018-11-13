@@ -153,6 +153,7 @@ function prepend(element, list) {
 }
 
 function nth(list, number) {
-    if (number === 0) return list.value;
+    if (!list) return undefined;
+    else if (number === 0) return list.value;
     else return nth(list.rest, number - 1);
 }
