@@ -175,6 +175,8 @@ function nth(list, number) {
 // properties of objects to compare them.
 
 function deepEqual(val1, val2) {
+    if (val1 === val2) return true;
+
     if (typeof val1 === 'object' && val1 !== null && typeof val2 === 'object' && val2 !== null) {
 	let keys = Object.keys(val1), keys2 = Object.keys(val2);
 	if (keys.length !== keys2.length)
