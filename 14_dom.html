@@ -50,12 +50,29 @@ setting their style.textAlign property to "right".
 
   // Your code here
   let table = document.createElement('table');
-  // head
+  // head row
   let head = document.createElement('tr');
-  table.appendChild(head);
+  for (let key of Object.keys(MOUNTAINS[0])) {
+  	let headname = document.createElement('th');
+    let data = document.createTextNode(key);
+    headname.appendChild(data);
+    head.appendChild(headname);
+  }
+  table.appendChild(head)
+  // data rows
+  MOUNTAINS.forEach((obj) => {
+  	let row = document.createElement('tr');
+    for (let prop in obj) {
+      let el = document.createElement('td');
+      let text = document.createTextNode(obj[prop]);
+      if (! isNaN(obj[prop]) )
+          el.style.textAlign = "right";
+      el.appendChild(text);
+      row.appendChild(el);
+    }
+    table.appendChild(row);
+  });
   
-  //TODO
-
   let mountainsDiv = document.getElementById('mountains');
   mountainsDiv.appendChild(table);
 </script>
