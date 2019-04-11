@@ -19,24 +19,28 @@
 <p>🎈</p>
 
 <script>
-  // Your code here
-  let balloon = document.querySelector("p");
-  balloon.style.fontSize = "16px";
-  let size = 16;
-  window.addEventListener("keydown", event => {
-    if (event.key == "ArrowUp") {
-      let toAdd = Math.ceil(size * 0.1);
-      size += toAdd;
-      balloon.style.fontSize = `${size}px`;
-      event.preventDefault();
-    }
-  });
-    window.addEventListener("keydown", event => {
-    if (event.key == "ArrowDown") {
-      let toSubtract = Math.ceil(size * 0.1);
-      size -= toSubtract;
-      balloon.style.fontSize = `${size}px`;
-      event.preventDefault();
-    }
-  }); 
+ // Your code hereement. Remember to include a unit in the value—for example, pixels (10px).
+ let balloon = document.querySelector("p");
+ balloon.style.fontSize = "16px";
+ let size = 16;
+ function update(event) {
+     if (event.key == "ArrowUp") {
+	 let toAdd = Math.ceil(size * 0.1);
+	 size += toAdd;
+	 console.log(size);
+	 if (size > 100) {
+             balloon.textContent = "💥";
+             window.removeEventListener("keydown", update);
+	 }
+	 balloon.style.fontSize = `${size}px`;
+	 event.preventDefault();
+     }
+     if (event.key == "ArrowDown") {
+	 let toSubtract = Math.ceil(size * 0.1);
+	 size -= toSubtract;
+	 balloon.style.fontSize = `${size}px`;
+	 event.preventDefault();
+     }
+ }
+ window.addEventListener("keydown", update)
 </script>
