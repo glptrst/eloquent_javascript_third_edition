@@ -98,3 +98,53 @@
  });
 </script>
   
+<!-- Tabs -->
+
+<!-- Tabbed panels are widely used in user interfaces. They allow you to select an -->
+<!-- interface panel by choosing from a number of tabs “sticking out” above an -->
+<!-- element. -->
+
+<!-- In this exercise you must implement a simple tabbed interface. Write a function, -->
+<!-- asTabs, that takes a DOM node and creates a tabbed interface showing the child -->
+<!-- elements of that node. It should insert a list of <button> elements at the top -->
+<!-- of the node, one for each child element, containing text retrieved from the -->
+<!-- data-tabname attribute of the child. All but one of the original children should -->
+<!-- be hidden (given a display style of none). The currently visible node can be -->
+<!-- selected by clicking the buttons. -->
+
+<!-- When that works, extend it to style the button for the currently selected tab -->
+<!-- differently so that it is obvious which tab is selected. -->
+
+<tab-panel>
+    <div data-tabname="one">Tab one</div>
+    <div data-tabname="two">Tab two</div>
+    <div data-tabname="three">Tab three</div>
+</tab-panel>
+<script>
+ function asTabs(node) {
+     // Your code here.
+     let children = Array.from(node.children);
+     
+     for (let child of children) {
+     	 let button = document.createElement('button');
+         let text = document.createTextNode(child.getAttribute("data-tabname"));
+         button.appendChild(text);
+         document.body.insertBefore(button, node);
+     }
+     
+     for (let i = 0; i < children.length; i++) {
+    	 if (i === 0) ;
+         else children[i].style.display = 'none';
+     }
+     
+     let buttons = document.querySelectorAll('button');
+     for (let button of Array.from(buttons)) {
+	 button.addEventListener('click', (event) => {
+             // event.target.textContent
+
+	 });
+     }
+     
+ }
+ asTabs(document.querySelector("tab-panel"));
+</script>
