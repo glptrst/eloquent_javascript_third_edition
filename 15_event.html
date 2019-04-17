@@ -124,27 +124,32 @@
  function asTabs(node) {
      // Your code here.
      let children = Array.from(node.children);
-     
-     for (let child of children) {
-     	 let button = document.createElement('button');
-         let text = document.createTextNode(child.getAttribute("data-tabname"));
-         button.appendChild(text);
-         document.body.insertBefore(button, node);
-     }
-     
+     // store objects with bidings buttons and associated tabs
+     let buttonsAndTabs = [];
      for (let i = 0; i < children.length; i++) {
-    	 if (i === 0) ;
-         else children[i].style.display = 'none';
+	 let button = document.createElement('button');
+	 let text = document.createTextNode(children[i].getAttribute("data-tabname"));
+	 button.appendChild(text);
+	 document.body.insertBefore(button, node);
+	 buttonsAndTabs.push( { button: button, tab: children[i] } );
      }
-     
+     // take a button, display associated tab
+     function displayTab(button) {
+	 for (let obj of buttonsAndTabs) {
+             if (obj.button === button) {
+		 obj.tab.style.display = ''; 
+             } else {
+		 obj.tab.style.display = 'none'; 
+             }
+	 }
+     }
      let buttons = document.querySelectorAll('button');
-     for (let button of Array.from(buttons)) {
-	 button.addEventListener('click', (event) => {
-             // event.target.textContent
-
-	 });
+     for (let i = 0; i< buttons.length; i++) {
+         buttons[i].addEventListener('click', (event) => {
+             displayTab(event.target);
+         });
      }
-     
+     displayTab(buttons[0]);
  }
  asTabs(document.querySelector("tab-panel"));
 </script>
