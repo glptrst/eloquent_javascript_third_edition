@@ -18,7 +18,7 @@
 // Finally, try asking for the media type application/rainbows+unicorns and see
 // which status code that produces.
 
-fetch('https://eloquentjavascript.net/author', {heders: {Accept: 'text/plain'}})
+fetch('https://eloquentjavascript.net/author', {headers: {Accept: 'text/plain'}})
   .then(resp => resp.text())
   .then(text => console.log(text));
 
@@ -33,3 +33,18 @@ fetch('https://eloquentjavascript.net/author', {headers: {Accept: 'application/j
 fetch('https://eloquentjavascript.net/author', {headers: {Accept: 'rainbows+unicorns'}})
   .then(resp => resp.text())
   .then(text => console.log(text));
+
+// in a different way:
+let url = 'https://eloquentjavascript.net/author';
+let mediaTypes = ['text/plain', 'text/html', 
+                  'application/json', 'rainbows+unicorns'];
+
+async function makeReqs() {
+    for (let type of mediaTypes) {
+        let resp = await fetch(url, {headers: {Accept: type}});
+        let body = await resp.text();
+        console.log(`With ${type}: ${body}`);
+    }
+}
+
+makeReqs();
