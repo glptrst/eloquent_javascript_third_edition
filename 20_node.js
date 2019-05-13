@@ -16,31 +16,27 @@
 // might speed things up a little, but not a huge amount, since most file systems
 // can read only one thing at a time.
 
-let {readFileSync} = require('fs');
+const {readFileSync, statSync, readdirSync} = require("fs");
 
 let regexp = new RegExp(process.argv[2], 'g');
+let paths = process.argv.slice(3);
 
-for (let i = 3; i < process.argv.length; i++) {
-    let file = process.argv[i];
-    let content = readFileSync(file, 'utf8');
-    console.log(file + ': ' + regexp.test(content));
+search(regexp, paths);
+
+// Take regexp and array of paths
+function search(regexp, arr) {
+    for (let i = 0; i < arr.length; i++) {
+	let path = arr[i];
+	let stats = statSync(path);
+
+	if (stats.isDirectory()) {
+	    let dirContent = readdirSync(path).map((el) => {
+		return path + '/' + el;
+	    });
+	    search(regexp, dirContent);
+	} else {
+	    let content = readFileSync(path, 'utf8');
+	    console.log(path + ': ' + regexp.test(content));
+	}  
+    }
 }
-
-// printing in order using await
-// (async function () {
-//     let {readFile} = require('fs').promises;
-
-//     let toFind = process.argv[2];
-
-//     for (let i = 3; i < process.argv.length; i++) {
-// 	let file = process.argv[i];
-// 	try{
-// 	    let text = await readFile(file, 'utf8');
-// 	    let regexp = new RegExp(toFind, 'g');
-// 	    console.log(file + ': ' + regexp.test(text));
-// 	}
-// 	catch(e) {
-// 	    console.log(e);
-// 	}
-//     }
-// })();
