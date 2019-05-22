@@ -9,9 +9,7 @@ fetch("page.html").then(response => {
 
 let form = document.querySelector("form");
 form.addEventListener("submit", event => {
-    console.log(form.text.value);
     event.preventDefault();
-
     fetch("page.html", {method: "PUT", body: form.text.value}).then(resp => {
 	console.log(resp.status);
     });
