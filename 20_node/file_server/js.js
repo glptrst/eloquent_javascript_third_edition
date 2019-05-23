@@ -22,16 +22,6 @@ select.addEventListener('change', event => {
     showContent(event.target.value);
 });
 
-select.addEventListener('change', event => {
-    //console.log(event.target.value);
-    fetch(event.target.value)
-	.then(content => {
-	    content.text().then(text => {
-		textarea.value = text;
-	    });
-	});
-});
-
 // Get name of page. Get its content and show it in the textarea
 function showContent (page) {
     fetch(page)
@@ -41,4 +31,3 @@ function showContent (page) {
 	    });
 	});
 }
-
