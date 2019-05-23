@@ -20,26 +20,4 @@
     
   </body>
 </html>
-<script>
- let select = document.querySelector('select');
- select.addEventListener('change', event => {
-     console.log(event.target.value);
-     // TODO
- });
-
- fetch('/').then(response => {
-     response.text()
-	     .then(content => {
-		 let files = content.split('\n');
-		 for (let file of files) {
-		     let option = document.createElement('option');
-		     let optionText = document.createTextNode(file);
-		     option.appendChild(optionText);
-		     select.appendChild(option);
-		 }
-	     });
- });
- 
- 
-</script>
-
+<script src="js.js"></script>
