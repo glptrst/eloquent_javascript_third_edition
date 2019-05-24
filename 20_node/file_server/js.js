@@ -31,3 +31,11 @@ function showContent (page) {
 	    });
 	});
 }
+
+let form = document.querySelector("form");
+form.addEventListener("submit", event => {
+    event.preventDefault();
+        fetch(select.value, {method: "PUT", body: form.text.value}).then(resp => {
+    	console.log(resp.status);
+    });
+});
