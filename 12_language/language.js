@@ -15,6 +15,7 @@ function parseExpression(program) {
 }
 
 function skipSpace(string) {
+    string = removeComments(string);
     let first = string.search(/\S/);
     if (first == -1) return "";
     return string.slice(first);
@@ -177,3 +178,20 @@ topScope.length = function (array) {
 topScope.element = function (array, n) {
     return array[n];
 };
+
+
+// Exercise: Comments
+// (skipSpace now calls removeComments before doing its job)
+function removeComments(s) {
+    let hash = s.search('#');
+    if (hash !== -1) {
+	let newLine = s.search('\n');
+	if (newLine !== -1) {
+	    return removeComments(s.replace(s.slice(hash, newLine+1), ''));
+	} else {
+	    return s.slice(0, hash);
+	}
+    } else {
+	return s;
+    }
+}
