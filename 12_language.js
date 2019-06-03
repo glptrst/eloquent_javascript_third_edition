@@ -119,7 +119,27 @@ specialForms.define = (args, scope) => {
     return value;
 };
 
-//The Environment
+// Exercise: Fixing Scope.
+
+specialForms.set = (args, scope) => {
+    if (args.length != 2 || args[0].type != "word") {
+    	throw new SyntaxError("Incorrect use of set");
+    }
+    
+    let currentScope = scope;
+    while (currentScope !== null) {
+	if (Object.prototype.hasOwnProperty.call(currentScope, args[0].name)) {
+	    let value = evaluate(args[1], scope);
+    	    currentScope[args[0].name] = value;
+    	    return value;
+	} else {
+	    currentScope = Object.getPrototypeOf(currentScope);
+	}
+    }
+    throw new Error('binding does not exist');
+};
+
+// The Environment
 
 const topScope = Object.create(null);
 
@@ -138,7 +158,6 @@ topScope.print = value => {
 function run(program) {
     return evaluate(parse(program), Object.create(topScope));
 }
-
 
 // Functions
 
@@ -166,7 +185,7 @@ specialForms.fun = (args, scope) => {
   };
 };
 
-// Exercise: arrays
+// Exercise: Arrays
 topScope.array = function (...values) {
     return values;
 };
@@ -178,7 +197,6 @@ topScope.length = function (array) {
 topScope.element = function (array, n) {
     return array[n];
 };
-
 
 // Exercise: Comments
 // (skipSpace now calls removeComments before doing its job)
