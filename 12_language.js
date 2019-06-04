@@ -186,17 +186,11 @@ specialForms.fun = (args, scope) => {
 };
 
 // Exercise: Arrays
-topScope.array = function (...values) {
-    return values;
-};
+topScope.array = (...values) => values;
 
-topScope.length = function (array) {
-    return array.length;
-};
+topScope.lenght = array => array.length;
 
-topScope.element = function (array, n) {
-    return array[n];
-};
+topScope.element = (array, n) => array[n];
 
 // Exercise: Comments
 // (skipSpace now calls removeComments before doing its job)
