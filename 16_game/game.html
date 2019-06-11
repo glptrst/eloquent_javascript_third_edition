@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="./style.css">
+  </head>
+
+  <body>
+  </body>
+</html>
+
+<script src="./game.js"></script>
+<script>
+  let simpleLevel = new Level(simpleLevelPlan);
+  let display = new DOMDisplay(document.body, simpleLevel);
+  display.syncState(State.start(simpleLevel));
+</script>
+
+
