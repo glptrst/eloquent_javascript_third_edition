@@ -1,3 +1,8 @@
+/* We use a `plan` (a string of chars) to create a `level` (an object
+ * that holds an array of arrays of strings representing the chars of
+ * the plan and an array of objects representing actors and their
+ * positions). A `level` is used to create a `state` of the game. */
+
 let simpleLevelPlan = `
 ......................
 ..#................#..
@@ -21,7 +26,11 @@ class Level {
 		let type = levelChars[ch];
 		if (typeof type == "string") return type;
 		this.startActors.push(
-		    type.create(new Vec(x, y), ch));
+		    type.create(new Vec(x, y), ch)); // we pass `ch`
+						     // as well
+						     // because there
+						     // are different
+						     // types of lava
 		return "empty";
 	    });
 	});
