@@ -75,7 +75,7 @@ class Player {
 
     static create(pos) {
 	return new Player(pos.plus(new Vec(0, -0.5)),
-			  new Vec(0, 0));
+	 		  new Vec(0, 0));
     }
 }
 
@@ -127,92 +127,100 @@ const levelChars = {
     "=": Lava, "|": Lava, "v": Lava
 };
 
-//Helper function that provides a succinct way to create an element
-//and give it some attributes and child nodes:
+/*
+  The drawing subsystem will be encapsulated. ``By putting the drawing behind an
+  interface, we can load the same game program there and plug in a new display
+  module. The encapsulation of the drawing code is done by defining a display
+  object, which displays a given level and state.''
+*/
+
+//Helper function that provides a succinct way to create an element and give it
+//some attributes and child nodes:
 function elt(name, attrs, ...children) {
-  let dom = document.createElement(name);
-  for (let attr of Object.keys(attrs)) {
-    dom.setAttribute(attr, attrs[attr]);
-  }
-  for (let child of children) {
-    dom.appendChild(child);
-  }
-  return dom;
+    let dom = document.createElement(name);
+    for (let attr of Object.keys(attrs)) {
+	dom.setAttribute(attr, attrs[attr]);
+    }
+    for (let child of children) {
+	dom.appendChild(child);
+    }
+    return dom;
 }
 
-//A display is created by giving it a parent element to which it
-//should append itself and a level object.
+//A display is created by giving it a parent element to which it should append
+//itself and a level object.
 class DOMDisplay {
-  constructor(parent, level) {
-    this.dom = elt("div", {class: "game"}, drawGrid(level));
-    this.actorLayer = null;
-    parent.appendChild(this.dom);
-  }
+    constructor(parent, level) {
+	this.dom = elt("div", {class: "game"}, drawGrid(level));
+	this.actorLayer = null;
+	parent.appendChild(this.dom);
+    }
 
-  clear() { this.dom.remove(); }
+    clear() { this.dom.remove(); }
 }
 
+//Store number of pixels that a single unit takes up on the screen.
 const scale = 20;
 
 function drawGrid(level) {
-  return elt("table", {
-    class: "background",
-    style: `width: ${level.width * scale}px`
-  }, ...level.rows.map(row =>
-    elt("tr", {style: `height: ${scale}px`},
-        ...row.map(type => elt("td", {class: type})))
-  ));
+    return elt("table", {
+	class: "background",
+	style: `width: ${level.width * scale}px`
+    }, ...level.rows.map(row =>
+			 elt("tr", {style: `height: ${scale}px`},
+			     ...row.map(type => elt("td", {class: type})))
+			));
 }
 
-//We draw each actor by creating a DOM element for it and setting that
-//element’s position and size based on the actor’s properties.
+//We draw each actor by creating a DOM element for it and setting that element’s
+//position and size based on the actor’s properties.
 function drawActors(actors) {
-  return elt("div", {}, ...actors.map(actor => {
-    let rect = elt("div", {class: `actor ${actor.type}`});
-    rect.style.width = `${actor.size.x * scale}px`;
-    rect.style.height = `${actor.size.y * scale}px`;
-    rect.style.left = `${actor.pos.x * scale}px`;
-    rect.style.top = `${actor.pos.y * scale}px`;
-    return rect;
-  }));
+    return elt("div", {}, ...actors.map(actor => {
+	let rect = elt("div", {class: `actor ${actor.type}`});
+	rect.style.width = `${actor.size.x * scale}px`;
+	rect.style.height = `${actor.size.y * scale}px`;
+	rect.style.left = `${actor.pos.x * scale}px`;
+	rect.style.top = `${actor.pos.y * scale}px`;
+	return rect;
+    }));
 }
 
-// Make the display show a given state
+//Make the display show a given state
 DOMDisplay.prototype.syncState = function(state) {
-  if (this.actorLayer) this.actorLayer.remove();
-  this.actorLayer = drawActors(state.actors);
-  this.dom.appendChild(this.actorLayer);
-  this.dom.className = `game ${state.status}`;
-  this.scrollPlayerIntoView(state);
+    if (this.actorLayer) this.actorLayer.remove();
+    this.actorLayer = drawActors(state.actors);
+    this.dom.appendChild(this.actorLayer);
+    this.dom.className = `game ${state.status}`;
+    this.scrollPlayerIntoView(state);
 };
 
 DOMDisplay.prototype.scrollPlayerIntoView = function(state) {
-  let width = this.dom.clientWidth;
-  let height = this.dom.clientHeight;
-  let margin = width / 3;
+    let width = this.dom.clientWidth;
+    let height = this.dom.clientHeight;
+    let margin = width / 3;
 
-  // The viewport
-  let left = this.dom.scrollLeft, right = left + width;
-  let top = this.dom.scrollTop, bottom = top + height;
+    // The viewport
+    let left = this.dom.scrollLeft, right = left + width;
+    let top = this.dom.scrollTop, bottom = top + height;
 
-  let player = state.player;
-  let center = player.pos.plus(player.size.times(0.5))
-                         .times(scale);
+    let player = state.player;
+    let center = player.pos.plus(player.size.times(0.5))
+        .times(scale);
 
-  if (center.x < left + margin) {
-    this.dom.scrollLeft = center.x - margin;
-  } else if (center.x > right - margin) {
-    this.dom.scrollLeft = center.x + margin - width;
-  }
-  if (center.y < top + margin) {
-    this.dom.scrollTop = center.y - margin;
-  } else if (center.y > bottom - margin) {
-    this.dom.scrollTop = center.y + margin - height;
-  }
+    if (center.x < left + margin) {
+	this.dom.scrollLeft = center.x - margin;
+    } else if (center.x > right - margin) {
+	this.dom.scrollLeft = center.x + margin - width;
+    }
+    if (center.y < top + margin) {
+	this.dom.scrollTop = center.y - margin;
+    } else if (center.y > bottom - margin) {
+	this.dom.scrollTop = center.y + margin - height;
+    }
 };
 
-// Tell whether a rectangle (specified by a position and a size)
-// touches a grid element of the given type.
+// Tell whether a rectangle (specified by a position and a size) touches a grid
+// element of the given type.
 Level.prototype.touches = function(pos, size, type) {
     var xStart = Math.floor(pos.x);
     var xEnd = Math.ceil(pos.x + size.x);
@@ -331,45 +339,45 @@ const arrowKeys = trackKeys(["ArrowLeft", "ArrowRight", "ArrowUp"]);
 
 
 function runAnimation(frameFunc) {
-  let lastTime = null;
-  function frame(time) {
-    if (lastTime != null) {
-      let timeStep = Math.min(time - lastTime, 100) / 1000;
-      if (frameFunc(timeStep) === false) return;
+    let lastTime = null;
+    function frame(time) {
+	if (lastTime != null) {
+	    let timeStep = Math.min(time - lastTime, 100) / 1000;
+	    if (frameFunc(timeStep) === false) return;
+	}
+	lastTime = time;
+	requestAnimationFrame(frame);
     }
-    lastTime = time;
     requestAnimationFrame(frame);
-  }
-  requestAnimationFrame(frame);
 }
 
 function runLevel(level, Display) {
-  let display = new Display(document.body, level);
-  let state = State.start(level);
-  let ending = 1;
-  return new Promise(resolve => {
-    runAnimation(time => {
-      state = state.update(time, arrowKeys);
-      display.syncState(state);
-      if (state.status == "playing") {
-        return true;
-      } else if (ending > 0) {
-        ending -= time;
-        return true;
-      } else {
-        display.clear();
-        resolve(state.status);
-        return false;
-      }
+    let display = new Display(document.body, level);
+    let state = State.start(level);
+    let ending = 1;
+    return new Promise(resolve => {
+	runAnimation(time => {
+	    state = state.update(time, arrowKeys);
+	    display.syncState(state);
+	    if (state.status == "playing") {
+		return true;
+	    } else if (ending > 0) {
+		ending -= time;
+		return true;
+	    } else {
+		display.clear();
+		resolve(state.status);
+		return false;
+	    }
+	});
     });
-  });
 }
 
 async function runGame(plans, Display) {
-  for (let level = 0; level < plans.length;) {
-    let status = await runLevel(new Level(plans[level]),
-                                Display);
-    if (status == "won") level++;
-  }
-  console.log("You've won!");
+    for (let level = 0; level < plans.length;) {
+	let status = await runLevel(new Level(plans[level]),
+                                    Display);
+	if (status == "won") level++;
+    }
+    console.log("You've won!");
 }
