@@ -146,6 +146,9 @@ function elt(name, attrs, ...children) {
     }
     return dom;
 }
+/* Why not taking as third element an array, instead of using the spread
+ * operator(both in the function definition and when passing paramenter later
+ * on)? */
 
 //A display is created by giving it a parent element to which it should append
 //itself and a level object.
@@ -162,6 +165,7 @@ class DOMDisplay {
 //Store number of pixels that a single unit takes up on the screen.
 const scale = 20;
 
+// Take a level and create grid accordingly
 function drawGrid(level) {
     return elt("table", {
 	class: "background",
@@ -194,6 +198,7 @@ DOMDisplay.prototype.syncState = function(state) {
     this.scrollPlayerIntoView(state);
 };
 
+//Find the player’s position and update the wrapping element’s scroll position
 DOMDisplay.prototype.scrollPlayerIntoView = function(state) {
     let width = this.dom.clientWidth;
     let height = this.dom.clientHeight;
@@ -258,6 +263,7 @@ State.prototype.update = function(time, keys) {
     return newState;
 };
 
+//Takes two actor objects; return true when they touch
 function overlap(actor1, actor2) {
     return actor1.pos.x + actor1.size.x > actor2.pos.x &&
         actor1.pos.x < actor2.pos.x + actor2.size.x &&
@@ -337,7 +343,6 @@ function trackKeys(keys) {
 
 const arrowKeys = trackKeys(["ArrowLeft", "ArrowRight", "ArrowUp"]);
 
-
 function runAnimation(frameFunc) {
     let lastTime = null;
     function frame(time) {
@@ -374,9 +379,19 @@ function runLevel(level, Display) {
 }
 
 async function runGame(plans, Display) {
+    let lifes = 3;
     for (let level = 0; level < plans.length;) {
+	console.log(`you have ${lifes} lifes`);
 	let status = await runLevel(new Level(plans[level]),
                                     Display);
+	if (status == "lost") {
+            lifes--;
+            if (lifes === 0) {
+          	console.log('game over');
+        	lifes = 3;
+		level = 0;
+            }
+	}
 	if (status == "won") level++;
     }
     console.log("You've won!");
