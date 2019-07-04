@@ -360,10 +360,21 @@ function runLevel(level, Display) {
     let display = new Display(document.body, level);
     let state = State.start(level);
     let ending = 1;
+    let pause = false;
+    window.addEventListener('keydown', function(event) {
+    	if (event.key === 'Escape') {
+            pause = pause ? false : true;
+        }
+    });
     return new Promise(resolve => {
 	runAnimation(time => {
 	    state = state.update(time, arrowKeys);
 	    display.syncState(state);
+
+	    if (pause) {
+		return false;
+	    }
+
 	    if (state.status == "playing") {
 		return true;
 	    } else if (ending > 0) {
