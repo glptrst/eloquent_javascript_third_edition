@@ -361,33 +361,37 @@ function runLevel(level, Display) {
     let state = State.start(level);
     let ending = 1;
     let pause = false;
-    window.addEventListener('keydown', function(event) {
-    	if (event.key === 'Escape') {
-            pause = pause ? false : true;
-        }
-    });
     return new Promise(resolve => {
-	runAnimation(time => {
+	window.addEventListener('keydown', function(event) {
+    	    if (event.key === 'Escape') {
+		pause = pause ? false : true;
+		if (!pause) {
+                    runAnimation(frameFunc);
+		}
+            }
+	});
+	
+	runAnimation(frameFunc);
+	
+	function frameFunc(time) {
 	    state = state.update(time, arrowKeys);
-	    display.syncState(state);
-
-	    if (pause) {
-		return false;
-	    }
-
-	    if (state.status == "playing") {
+            display.syncState(state);
+            if (pause) return false;
+            if (state.status == "playing") {
 		return true;
-	    } else if (ending > 0) {
+            } else if (ending > 0) {
 		ending -= time;
 		return true;
-	    } else {
+            } else {
 		display.clear();
 		resolve(state.status);
 		return false;
-	    }
-	});
+            }
+	}
+	
     });
 }
+
 
 async function runGame(plans, Display) {
     let lifes = 3;
@@ -399,7 +403,7 @@ async function runGame(plans, Display) {
             lifes--;
             if (lifes === 0) {
           	console.log('game over');
-        	lifes = 3;
+		lifes = 3;
 		level = 0;
             }
 	}
