@@ -338,10 +338,12 @@ function trackKeys(keys) {
     }
     window.addEventListener("keydown", track);
     window.addEventListener("keyup", track);
+    down.unregisterHandlers = function() {
+	window.removeEventListener("keydown", track);
+	window.removeEventListener("keyup", track);
+    };
     return down;
 }
-
-const arrowKeys = trackKeys(["ArrowLeft", "ArrowRight", "ArrowUp"]);
 
 function runAnimation(frameFunc) {
     let lastTime = null;
@@ -357,6 +359,7 @@ function runAnimation(frameFunc) {
 }
 
 function runLevel(level, Display) {
+    const arrowKeys = trackKeys(["ArrowLeft", "ArrowRight", "ArrowUp"]);
     let display = new Display(document.body, level);
     let state = State.start(level);
     let ending = 1;
@@ -383,15 +386,14 @@ function runLevel(level, Display) {
 		ending -= time;
 		return true;
             } else {
+		arrowKeys.unregisterHandlers();
 		display.clear();
 		resolve(state.status);
 		return false;
             }
 	}
-	
     });
 }
-
 
 async function runGame(plans, Display) {
     let lifes = 3;
