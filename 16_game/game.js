@@ -121,10 +121,39 @@ class Coin {
 
 Coin.prototype.size = new Vec(0.6, 0.6);
 
+class Monster {
+    constructor(pos, speed) {
+	this.pos = pos;
+	this.speed = speed;
+    }
+
+    get type() { return "monster"; }
+
+    static create(pos, speed) {
+        return new Monster(pos.plus(new Vec(0, -1)), new Vec(8, 0));
+    }
+
+    update(time, state) {
+	let newPos = this.pos.plus(this.speed.times(time));
+	if (!state.level.touches(newPos, this.size, "wall")) {
+	    return new Monster(newPos, this.speed);
+	} else {
+	    return new Monster(this.pos, this.speed.times(-1));
+	}
+    }
+
+    collide(state) {
+	return new State(state.level, state.actors, "playing");
+    }
+}
+
+Monster.prototype.size = new Vec(1.2, 2);
+
 const levelChars = {
     ".": "empty", "#": "wall", "+": "lava",
     "@": Player, "o": Coin,
-    "=": Lava, "|": Lava, "v": Lava
+    "=": Lava, "|": Lava, "v": Lava,
+    "M": Monster
 };
 
 /*
