@@ -143,7 +143,15 @@ class Monster {
     }
 
     collide(state) {
-	return new State(state.level, state.actors, "playing");
+	let playerBottom = state.player.pos.y + 1;
+	let monsterTop = this.pos.y - 1;
+
+	if (playerBottom - monsterTop) {
+	    let filtered = state.actors.filter(a => a != this);
+	    return new State(state.level, filtered, state.status);
+	} else {
+	    return new State(state.level, state.actors, "lost");
+	}
     }
 }
 
