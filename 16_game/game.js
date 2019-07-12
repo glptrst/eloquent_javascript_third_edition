@@ -146,6 +146,8 @@ class Monster {
 	let playerBottom = state.player.pos.y + 1;
 	let monsterTop = this.pos.y - 1;
 
+	state.player.speed.y = -10;
+
 	if (playerBottom - monsterTop < 1) {
 	    let filtered = state.actors.filter(a => a != this);
 	    return new State(state.level, filtered, state.status);
