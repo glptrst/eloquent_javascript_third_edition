@@ -404,14 +404,15 @@ function runLevel(level, Display) {
     let ending = 1;
     let pause = false;
     return new Promise(resolve => {
-	window.addEventListener('keydown', function(event) {
-    	    if (event.key === 'Escape') {
+	function pauseHandler(event) {
+	    if (event.key === 'Escape') {
 		pause = pause ? false : true;
 		if (!pause) {
                     runAnimation(frameFunc);
 		}
             }
-	});
+	}
+	window.addEventListener('keydown', pauseHandler);
 	
 	runAnimation(frameFunc);
 	
@@ -426,6 +427,7 @@ function runLevel(level, Display) {
 		return true;
             } else {
 		arrowKeys.unregisterHandlers();
+		window.removeEventListener("keydown", pauseHandler);
 		display.clear();
 		resolve(state.status);
 		return false;
