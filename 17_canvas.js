@@ -16,12 +16,31 @@
 // code, tends to make the code needlessly hard to read and modify.
 
 
-//Trapezoid
-let cx = document.querySelector("canvas").getContext("2d");
-cx.beginPath();
-cx.moveTo(20, 10);
-cx.lineTo(70, 10);
-cx.lineTo(80, 50);
-cx.lineTo(10, 50);
-cx.closePath();
-cx.stroke();
+// Trapezoid
+function trapezoid(center) {
+    let cx = document.querySelector("canvas").getContext("2d");
+    cx.beginPath();
+    cx.moveTo(center.x - 20, center.y - 20);
+    cx.lineTo(center.x + 20, center.y - 20);
+    cx.lineTo(center.x + 40, center.y + 20);
+    cx.lineTo(center.x - 40, center.y + 20);
+    cx.closePath();
+    cx.stroke();
+}
+
+// Red Diamond
+function redDiamond(center) {
+    let cx = document.querySelector("canvas").getContext("2d");
+    cx.beginPath();
+    cx.moveTo(center.x, center.y - 25);
+    cx.lineTo(center.x + 25, center.y);
+    cx.lineTo(center.x, center.y + 25);
+    cx.lineTo(center.x - 25, center.y);
+    cx.closepath();
+    cx.fillStyle = "red";
+    cx.fill();
+}
+
+
+
+
