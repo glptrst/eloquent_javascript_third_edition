@@ -41,6 +41,21 @@ function redDiamond(center) {
     cx.fill();
 }
 
+// Zigzag
+zigzag({x: 10, y: 10});
 
+function zigzag(start) {
+    let cx = document.querySelector("canvas").getContext("2d");
+    cx.moveTo(start.x, start.y);
+    let current = start;
+   
+    for (let i = 0; i < 12; i++) {
+	if (i % 2 === 0) {
+	    cx.lineTo(current.x = current.x + 80, current.y = current.y + 6);
+	} else {
+	    cx.lineTo(current.x = current.x - 80, current.y = current.y + 6);
+	}
+    }
 
-
+    cx.stroke();
+}
