@@ -42,20 +42,31 @@ function redDiamond(center) {
 }
 
 // Zigzag
-zigzag({x: 10, y: 10});
+zigzag({ x: 10, y: 10 });
 
 function zigzag(start) {
     let cx = document.querySelector("canvas").getContext("2d");
     cx.moveTo(start.x, start.y);
     let current = start;
-   
+
     for (let i = 0; i < 12; i++) {
-	if (i % 2 === 0) {
-	    cx.lineTo(current.x = current.x + 80, current.y = current.y + 6);
-	} else {
-	    cx.lineTo(current.x = current.x - 80, current.y = current.y + 6);
-	}
+        if (i % 2 === 0) {
+            cx.lineTo(current.x = current.x + 80, current.y = current.y + 6);
+        } else {
+            cx.lineTo(current.x = current.x - 80, current.y = current.y + 6);
+        }
     }
 
     cx.stroke();
+}
+
+// Spiral
+spiral({ x: 200, y: 100 });
+
+function spiral(start) {
+    diff = 0;
+    for (let i = 0; i <= 8 * Math.PI; i += 0.05) {
+        diff += 0.1;
+        cx.fillRect(Math.cos(i) * diff + start.x, Math.sin(i) * diff + start.y, 1, 1);
+    }
 }
