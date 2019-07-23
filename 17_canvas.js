@@ -64,9 +64,12 @@ function zigzag(start) {
 spiral({ x: 200, y: 100 });
 
 function spiral(start) {
+    cx.beginPath();
+    cx.moveTo(start.x, start.y);
     diff = 0;
     for (let i = 0; i <= 8 * Math.PI; i += 0.05) {
         diff += 0.1;
-        cx.fillRect(Math.cos(i) * diff + start.x, Math.sin(i) * diff + start.y, 1, 1);
+        cx.lineTo(Math.cos(i) * diff + start.x, Math.sin(i) * diff + start.y);
     }
+    cx.stroke();
 }
