@@ -73,3 +73,32 @@ function spiral(start) {
     }
     cx.stroke();
 }
+
+// Yellow star
+yellowStar({x: 50, y: 50}, 50);
+
+function yellowStar(center, radius){
+    let point1 = {x: Math.cos(0)*radius + center.x, y: Math.sin(0)*radius + center.y};
+    let point2 = {x: Math.cos((1/4) * Math.PI)*radius + center.x, y: Math.sin((1/4) * Math.PI)*radius + center.y};
+    let point3 = {x: Math.cos((2/4) * Math.PI)*radius + center.x, y: Math.sin((2/4) * Math.PI)*radius + center.y};
+    let point4 = {x: Math.cos((3/4) * Math.PI)*radius + center.x, y: Math.sin((3/4) * Math.PI)*radius + center.y};
+    let point5 = {x: Math.cos(Math.PI)*radius         + center.x, y: Math.sin(Math.PI)*radius         + center.y};
+    let point6 = {x: Math.cos((5/4) * Math.PI)*radius + center.x, y: Math.sin((5/4) * Math.PI)*radius + center.y};
+    let point7 = {x: Math.cos((6/4) * Math.PI)*radius + center.x, y: Math.sin((6/4) * Math.PI)*radius + center.y};
+    let point8 = {x: Math.cos((7/4) * Math.PI)*radius + center.x, y: Math.sin((7/4) * Math.PI)*radius + center.y};
+    let point9 = {x: Math.cos((8/4) * Math.PI)*radius + center.x, y: Math.sin((8/4) * Math.PI)*radius + center.y};
+
+    cx.beginPath();
+    cx.moveTo(point1.x, point1.y);
+    cx.quadraticCurveTo(50, 50, point2.x, point2.y);
+    cx.quadraticCurveTo(50, 50, point3.x, point3.y);
+    cx.quadraticCurveTo(50, 50, point4.x, point4.y);
+    cx.quadraticCurveTo(50, 50, point5.x, point5.y);
+    cx.quadraticCurveTo(50, 50, point6.x, point6.y);
+    cx.quadraticCurveTo(50, 50, point7.x, point7.y);
+    cx.quadraticCurveTo(50, 50, point8.x, point8.y);
+    cx.quadraticCurveTo(50, 50, point9.x, point9.y);
+
+    cx.fillStyle = 'orange';
+    cx.fill();
+}
