@@ -75,18 +75,18 @@ function spiral(start) {
 }
 
 // Yellow star
-yellowStar({x: 50, y: 50}, 50);
+yellowStar({ x: 50, y: 50 }, 50);
 
-function yellowStar(center, radius){
-    let point1 = {x: Math.cos(0)*radius + center.x, y: Math.sin(0)*radius + center.y};
-    let point2 = {x: Math.cos((1/4) * Math.PI)*radius + center.x, y: Math.sin((1/4) * Math.PI)*radius + center.y};
-    let point3 = {x: Math.cos((2/4) * Math.PI)*radius + center.x, y: Math.sin((2/4) * Math.PI)*radius + center.y};
-    let point4 = {x: Math.cos((3/4) * Math.PI)*radius + center.x, y: Math.sin((3/4) * Math.PI)*radius + center.y};
-    let point5 = {x: Math.cos(Math.PI)*radius         + center.x, y: Math.sin(Math.PI)*radius         + center.y};
-    let point6 = {x: Math.cos((5/4) * Math.PI)*radius + center.x, y: Math.sin((5/4) * Math.PI)*radius + center.y};
-    let point7 = {x: Math.cos((6/4) * Math.PI)*radius + center.x, y: Math.sin((6/4) * Math.PI)*radius + center.y};
-    let point8 = {x: Math.cos((7/4) * Math.PI)*radius + center.x, y: Math.sin((7/4) * Math.PI)*radius + center.y};
-    let point9 = {x: Math.cos((8/4) * Math.PI)*radius + center.x, y: Math.sin((8/4) * Math.PI)*radius + center.y};
+function yellowStar(center, radius) {
+    let point1 = { x: Math.cos(0) * radius + center.x, y: Math.sin(0) * radius + center.y };
+    let point2 = { x: Math.cos((1 / 4) * Math.PI) * radius + center.x, y: Math.sin((1 / 4) * Math.PI) * radius + center.y };
+    let point3 = { x: Math.cos((2 / 4) * Math.PI) * radius + center.x, y: Math.sin((2 / 4) * Math.PI) * radius + center.y };
+    let point4 = { x: Math.cos((3 / 4) * Math.PI) * radius + center.x, y: Math.sin((3 / 4) * Math.PI) * radius + center.y };
+    let point5 = { x: Math.cos(Math.PI) * radius + center.x, y: Math.sin(Math.PI) * radius + center.y };
+    let point6 = { x: Math.cos((5 / 4) * Math.PI) * radius + center.x, y: Math.sin((5 / 4) * Math.PI) * radius + center.y };
+    let point7 = { x: Math.cos((6 / 4) * Math.PI) * radius + center.x, y: Math.sin((6 / 4) * Math.PI) * radius + center.y };
+    let point8 = { x: Math.cos((7 / 4) * Math.PI) * radius + center.x, y: Math.sin((7 / 4) * Math.PI) * radius + center.y };
+    let point9 = { x: Math.cos((8 / 4) * Math.PI) * radius + center.x, y: Math.sin((8 / 4) * Math.PI) * radius + center.y };
 
     cx.beginPath();
     cx.moveTo(point1.x, point1.y);
@@ -102,3 +102,49 @@ function yellowStar(center, radius){
     cx.fillStyle = 'orange';
     cx.fill();
 }
+
+// THE PIE CHART
+
+// Earlier in the chapter, we saw an example program that drew a pie
+// chart. Modify this program so that the name of each category is
+// shown next to the slice that represents it. Try to find a
+// pleasing-looking way to automatically position this text that would
+// work for other data sets as well. You may assume that categories
+// are big enough to leave ample room for their labels.
+
+// You might need Math.sin and Math.cos again, which are described in
+// Chapter 14.
+
+//<canvas width="600" height="300"></canvas>
+//<script>
+let cx = document.querySelector("canvas").getContext("2d");
+let total = results
+    .reduce((sum, { count }) => sum + count, 0);
+let currentAngle = -0.5 * Math.PI;
+let centerX = 300, centerY = 150;
+
+// Add code to draw the slice labels in this loop.
+for (let result of results) {
+    //let sliceAngle = (2*Math.PI / total) * result.count;
+    let sliceAngle = (result.count / total) * 2 * Math.PI;
+    cx.beginPath();
+    cx.arc(centerX, centerY, 100,
+        currentAngle, currentAngle + sliceAngle);
+
+    //find middle of angle
+    let middleAngle = currentAngle + 0.5 * sliceAngle;
+    let textX = Math.cos(middleAngle) * 120 + centerX;
+    let textY = Math.sin(middleAngle) * 120 + centerY;
+    //put lable there
+    cx.font = "18px Georgia";
+    cx.fillStyle = result.color;
+    cx.textBaseline = "middle";
+    cx.textAlign = Math.cos(middleAngle) >= 0 ? "left" : "right";
+    cx.fillText("test", textX, textY);
+
+    currentAngle += sliceAngle;
+    cx.lineTo(centerX, centerY);
+    cx.fillStyle = result.color;
+    cx.fill();
+}
+//</script>
