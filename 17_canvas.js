@@ -148,3 +148,75 @@ for (let result of results) {
     cx.fill();
 }
 //</script>
+
+
+
+// A BOUNCING BALL
+
+// Use the requestAnimationFrame technique that we saw in Chapter 14 and Chapter
+// 16 to draw a box with a bouncing ball in it. The ball moves at a constant
+// speed and bounces off the box’s sides when it hits them.
+
+//<canvas width="400" height="400"></canvas>
+//<script>
+class Vec {
+  constructor(x, y) {
+    this.x = x; this.y = y;
+  }
+  plus(other) {
+    return new Vec(this.x + other.x, this.y + other.y);
+  }
+  times(factor) {
+    return new Vec(this.x * factor, this.y * factor);
+  }
+}
+
+class Ball {
+    constructor(pos, speed, height) { 
+	this.pos = pos;
+	this.speed = speed;
+	this.height = height;
+    }
+}
+
+let cx = document.querySelector("canvas").getContext("2d");
+
+cx.strokeRect(1, 1, 300, 300);
+let rectSize = 300;
+
+let ball = new Ball(new Vec(100, 100), new Vec(150, 200), 30);
+cx.beginPath();
+cx.arc(ball.pos.x, ball.pos.y, 30, 0, 7);
+cx.fill();
+cx.closePath();
+
+let lastTime = null;
+function frame(time) {
+    if (lastTime != null) {
+	updateAnimation(Math.min(100, time - lastTime) / 1000);
+    }
+    lastTime = time;
+    requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+
+function updateAnimation(step) {
+    // compute new pos 
+    let newPos = ball.pos.plus(ball.speed.times(step));
+    if (newPos.x > 270 || newPos.x < 30)
+	ball.speed.x = ball.speed.x * -1; 
+    if (newPos.y > 270 || newPos.y < 30)
+	ball.speed.y = ball.speed.y * -1; 
+
+    // clear all
+    cx.clearRect(0, 0, 400, 400);
+    // draw new rect
+    cx.strokeRect(1, 1, 301, 301);
+    // draw new pos
+    ball = new Ball(newPos, ball.speed, 30);
+    cx.beginPath();
+    cx.arc(ball.pos.x, ball.pos.y, 30, 0, 7);
+    cx.fill();
+    cx.closePath();
+}
+//</script>
