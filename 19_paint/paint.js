@@ -123,9 +123,18 @@ var PixelEditor = class PixelEditor {
         });
         this.controls = controls.map(
             Control => new Control(state, config));
-        this.dom = elt("div", {}, this.canvas.dom, elt("br"),
+        this.dom = elt("div", { tabIndex: 0 }, this.canvas.dom, elt("br"),
             ...this.controls.reduce(
                 (a, c) => a.concat(" ", c.dom), []));
+
+        this.dom.addEventListener("keydown", function(ev) {
+            for (let tool of Object.keys(tools)) {
+                if (ev.key[0] === tool[0]) {
+                    ev.preventDefault();
+                    dispatch({ tool: tool });
+                }
+            }
+        });
     }
     syncState(state) {
         this.state = state;
