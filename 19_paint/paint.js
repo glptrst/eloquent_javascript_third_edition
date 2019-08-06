@@ -1,4 +1,4 @@
-var Picture = class Picture {
+class Picture {
     constructor(width, height, pixels) {
         this.width = width;
         this.height = height;
@@ -34,9 +34,9 @@ function elt(type, props, ...children) {
     return dom;
 }
 
-var scale = 10;
+let scale = 10;
 
-var PictureCanvas = class PictureCanvas {
+class PictureCanvas {
     constructor(picture, pointerDown) {
         this.dom = elt("canvas", {
             onmousedown: event => this.mouse(event, pointerDown),
@@ -111,7 +111,7 @@ PictureCanvas.prototype.touch = function(startEvent,
     this.dom.addEventListener("touchend", end);
 };
 
-var PixelEditor = class PixelEditor {
+class PixelEditor {
     constructor(state, config) {
         let { tools, controls, dispatch } = config;
         this.state = state;
@@ -127,13 +127,26 @@ var PixelEditor = class PixelEditor {
             ...this.controls.reduce(
                 (a, c) => a.concat(" ", c.dom), []));
 
+        let metaHeldDown = false;
+        let controlHeldDown = false;
         this.dom.addEventListener("keydown", function(ev) {
+            if (ev.key === 'Control') controlHeldDown = true;
+            if (ev.key === 'Meta') metaHeldDown = true;
             for (let tool of Object.keys(tools)) {
                 if (ev.key[0] === tool[0]) {
                     ev.preventDefault();
                     dispatch({ tool: tool });
                 }
             }
+            if ((controlHeldDown && ev.key === 'z') || (metaHeldDown && ev.key === 'z')) {
+                ev.preventDefault();
+                dispatch({ undo: true });
+            }
+        });
+
+        this.dom.addEventListener("keyup", function(ev) {
+            if (ev.key === 'Control') controlHeldDown = false;
+            if (ev.key === 'Meta') metaHeldDown = false;
         });
     }
     syncState(state) {
@@ -143,7 +156,7 @@ var PixelEditor = class PixelEditor {
     }
 }
 
-var ToolSelect = class ToolSelect {
+class ToolSelect {
     constructor(state, { tools, dispatch }) {
         this.select = elt("select", {
             onchange: () => dispatch({ tool: this.select.value })
@@ -155,7 +168,7 @@ var ToolSelect = class ToolSelect {
     syncState(state) { this.select.value = state.tool; }
 }
 
-var ColorSelect = class ColorSelect {
+class ColorSelect {
     constructor(state, { dispatch }) {
         this.input = elt("input", {
             type: "color",
@@ -194,7 +207,7 @@ function rectangle(start, state, dispatch) {
     return drawRectangle;
 }
 
-var around = [{ dx: -1, dy: 0 }, { dx: 1, dy: 0 },
+let around = [{ dx: -1, dy: 0 }, { dx: 1, dy: 0 },
 { dx: 0, dy: -1 }, { dx: 0, dy: 1 }];
 
 function fill({ x, y }, state, dispatch) {
@@ -218,7 +231,7 @@ function pick(pos, state, dispatch) {
     dispatch({ color: state.picture.pixel(pos.x, pos.y) });
 }
 
-var SaveButton = class SaveButton {
+class SaveButton {
     constructor(state) {
         this.picture = state.picture;
         this.dom = elt("button", {
@@ -239,7 +252,7 @@ var SaveButton = class SaveButton {
     syncState(state) { this.picture = state.picture; }
 }
 
-var LoadButton = class LoadButton {
+class LoadButton {
     constructor(_, { dispatch }) {
         this.dom = elt("button", {
             onclick: () => startLoad(dispatch)
@@ -310,7 +323,7 @@ function historyUpdateState(state, action) {
     }
 }
 
-var UndoButton = class UndoButton {
+class UndoButton {
     constructor(state, { dispatch }) {
         this.dom = elt("button", {
             onclick: () => dispatch({ undo: true }),
@@ -322,7 +335,7 @@ var UndoButton = class UndoButton {
     }
 }
 
-var startState = {
+let startState = {
     tool: "draw",
     color: "#000000",
     picture: Picture.empty(60, 30, "#f0f0f0"),
@@ -330,9 +343,9 @@ var startState = {
     doneAt: 0
 };
 
-var baseTools = { draw, fill, rectangle, pick };
+let baseTools = { draw, fill, rectangle, pick };
 
-var baseControls = [
+let baseControls = [
     ToolSelect, ColorSelect, SaveButton, LoadButton, UndoButton
 ];
 
