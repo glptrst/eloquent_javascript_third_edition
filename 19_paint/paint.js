@@ -127,26 +127,18 @@ class PixelEditor {
             ...this.controls.reduce(
                 (a, c) => a.concat(" ", c.dom), []));
 
-        let metaHeldDown = false;
-        let controlHeldDown = false;
         this.dom.addEventListener("keydown", function(ev) {
-            if (ev.key === 'Control') controlHeldDown = true;
-            if (ev.key === 'Meta') metaHeldDown = true;
             for (let tool of Object.keys(tools)) {
                 if (ev.key[0] === tool[0]) {
                     ev.preventDefault();
                     dispatch({ tool: tool });
+                    return;
                 }
             }
-            if ((controlHeldDown && ev.key === 'z') || (metaHeldDown && ev.key === 'z')) {
+            if ((ev.ctrlKey && ev.key === 'z') || (ev.metaKey && ev.key === 'z')) {
                 ev.preventDefault();
                 dispatch({ undo: true });
             }
-        });
-
-        this.dom.addEventListener("keyup", function(ev) {
-            if (ev.key === 'Control') controlHeldDown = false;
-            if (ev.key === 'Meta') metaHeldDown = false;
         });
     }
     syncState(state) {
