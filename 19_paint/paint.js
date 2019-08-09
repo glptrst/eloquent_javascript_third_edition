@@ -46,8 +46,31 @@ class PictureCanvas {
     }
     syncState(picture) {
         if (this.picture == picture) return;
+        let previousPic = this.picture;
         this.picture = picture;
-        drawPicture(this.picture, this.dom, scale);
+        drawPicture(this.picture, this.dom, scale, previousPic);
+    }
+}
+
+function drawPicture1(picture, canvas, scale, previousPic) {
+    // set canvas.width/height only if picture's size is different from
+    // previousPic's size, to avoid clearing the canvas.
+    if (!(previousPic && picture.width == previousPic.width && picture.height === previousPic.height)) {
+        canvas.width = picture.width * scale;
+        canvas.height = picture.height * scale;
+        previousPic = null;
+    }
+    let cx = canvas.getContext("2d");
+
+    for (let y = 0; y < picture.height; y++) {
+        for (let x = 0; x < picture.width; x++) {
+            if (previousPic && previousPic.pixel(x, y) === picture.pixel(x, y)) {
+                ; //nothing to do  
+            } else {
+                cx.fillStyle = picture.pixel(x, y);
+                cx.fillRect(x * scale, y * scale, scale, scale);
+            }
+        }
     }
 }
 
