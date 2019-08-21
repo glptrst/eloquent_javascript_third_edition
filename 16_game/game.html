@@ -11,7 +11,9 @@
 <script src="./game.js"></script>
 <script src="./levels.js"></script>
 <script>
- runGame(GAME_LEVELS, DOMDisplay);
+  GAME_LEVELS = GAME_LEVELS.filter((lev) => lev === GAME_LEVELS[5]);
+  runGame(GAME_LEVELS, DOMDisplay);
+
 </script>
 
 

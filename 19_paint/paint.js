@@ -222,6 +222,31 @@ function rectangle(start, state, dispatch) {
     return drawRectangle;
 }
 
+function circle(start, state, dispatch) {
+    function drawRectangle(pos) {
+        let xStart = Math.min(start.x, pos.x);
+        let yStart = Math.min(start.y, pos.y);
+        let xEnd = Math.max(start.x, pos.x);
+        let yEnd = Math.max(start.y, pos.y);
+
+        let xDiff = xEnd - xStart;
+        let yDiff = yEnd - yStart;
+        let distance = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
+
+        console.log(distance);
+
+        let drawn = [];
+
+
+
+        dispatch({ picture: state.picture.draw(drawn) });
+    }
+    drawRectangle(start);
+    return drawRectangle;
+}
+
+
+
 let around = [{ dx: -1, dy: 0 }, { dx: 1, dy: 0 },
 { dx: 0, dy: -1 }, { dx: 0, dy: 1 }];
 
@@ -358,7 +383,7 @@ let startState = {
     doneAt: 0
 };
 
-let baseTools = { draw, fill, rectangle, pick };
+let baseTools = { draw, fill, rectangle, pick, circle };
 
 let baseControls = [
     ToolSelect, ColorSelect, SaveButton, LoadButton, UndoButton
