@@ -224,28 +224,40 @@ function rectangle(start, state, dispatch) {
 
 function circle(start, state, dispatch) {
     function drawRectangle(pos) {
+        //get distance between start and current pointer (radius)
         let xStart = Math.min(start.x, pos.x);
         let yStart = Math.min(start.y, pos.y);
         let xEnd = Math.max(start.x, pos.x);
         let yEnd = Math.max(start.y, pos.y);
-
         let xDiff = xEnd - xStart;
         let yDiff = yEnd - yStart;
-        let distance = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
-
-        console.log(distance);
-
+        let radius = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
+        console.log(`distance: ${radius}`);
         let drawn = [];
+        //loop over a square of pixels around the start position,
+        //whose sides are at least twice the radius. Color those that
+        //are withing the circle radius
+        console.log(`start: x: ${xStart}, y: ${yStart}`);
+        let rectStart = { x: xStart - Math.floor(radius), y: yStart - Math.floor(radius) };
+        console.log(`floor(radius): ${Math.floor(radius)}`);
+        console.log(`rectStart: ${rectStart.x}, ${rectStart.y}`);
+        let rectEnd = { x: xStart + Math.floor(radius), y: yStart + Math.floor(radius) };
+        console.log(`rectEnd: ${rectEnd.x}, ${rectEnd.y}`);
+        for (let y = rectStart.y; y <= rectEnd.y; y++) {
+            for (let x = rectStart.x; x <= rectEnd.x; x++) {
+                console.log(`x: ${x}, y: ${y}`);
+                // conditions.. (is the distance from current pixel to
+                // the starting pixel less or equal to the radius?)
 
+                // color pixel if conditions are met
 
-
+            }
+        }
         dispatch({ picture: state.picture.draw(drawn) });
     }
     drawRectangle(start);
     return drawRectangle;
 }
-
-
 
 let around = [{ dx: -1, dy: 0 }, { dx: 1, dy: 0 },
 { dx: 0, dy: -1 }, { dx: 0, dy: 1 }];
