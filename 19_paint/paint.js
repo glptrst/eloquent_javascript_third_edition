@@ -204,6 +204,31 @@ function draw(pos, state, dispatch) {
     return drawPixel;
 }
 
+function line(pos, state, dispatch) {
+    let extremePoints = []; // first and last pixel drawn (with possible gaps)
+    function drawLine({ x, y }, state) {
+        let drawn = { x, y, color: state.color };
+
+        extremePoints.push(drawn);
+        extremePoints = extremePoints.filter(p => {
+            if (p === extremePoints[0] || p === extremePoints[extremePoints.length - 1])
+                return true;
+            else
+                return false;
+        });
+
+        dispatch({ picture: state.picture.draw([drawn]) });
+
+        console.log(extremePoints);
+
+        // compute pixels between the two extreme points
+
+        // draw pixels
+    }
+    drawLine(pos, state);
+    return drawLine;
+}
+
 function rectangle(start, state, dispatch) {
     function drawRectangle(pos) {
         let xStart = Math.min(start.x, pos.x);
@@ -406,7 +431,7 @@ let startState = {
     doneAt: 0
 };
 
-let baseTools = { draw, fill, rectangle, pick, circle };
+let baseTools = { draw, fill, rectangle, pick, circle, line };
 
 let baseControls = [
     ToolSelect, ColorSelect, SaveButton, LoadButton, UndoButton
