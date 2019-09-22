@@ -1,4 +1,6 @@
 const {createServer} = require("http");
+const {writeFile} = require("fs");
+const {readFile} = require("fs").promises;
 const Router = require("./router");
 const ecstatic = require("ecstatic");
 
@@ -146,6 +148,38 @@ SkillShareServer.prototype.updated = function() {
   let response = this.talkResponse();
   this.waiting.forEach(resolve => resolve(response));
   this.waiting = [];
+
+  //console.log(`response.body: ${response.body}`);
+  let talks = {};
+  for (let talk of JSON.parse(response.body)) {
+    talks[talk.title] = talk;
+  }
+  //console.log(talks);
+
+  writeFile("./talks.json", JSON.stringify(talks), err => {
+    if (err) console.log(`Failed to write file: ${err}`);
+    else console.log("File written.");
+  });
 };
 
-new SkillShareServer(Object.create(null)).start(8000);
+readFile("./talks.json", "utf8")
+  .then( talks => {
+
+    //console.log(JSON.parse(talks));
+
+    let startObj = Object.create(null);
+    for (let title of Object.keys(JSON.parse(talks))) {
+      //console.log(JSON.parse(talks)[title]);
+      startObj[title] = JSON.parse(talks)[title];
+    }
+    //console.log("obj:" + JSON.stringify(obj));
+    //console.log(Object.getPrototypeOf(obj));
+
+    new SkillShareServer(startObj).start(8000);
+  })
+  .catch(e => {
+    if (e.code === "ENOENT")
+      new SkillShareServer(Object.create(null)).start(8000);
+    else
+      console.log(e);
+  });
