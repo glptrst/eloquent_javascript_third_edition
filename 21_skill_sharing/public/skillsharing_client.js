@@ -134,6 +134,46 @@ async function pollTalks(update) {
   }
 }
 
+class Talk {
+  constructor(talk, dispatch) {
+    this.talk = talk;
+    // this.commentsDOM = elt("div", null,
+    // 			...talk.comments.map(renderComment));
+    this.dom = elt(
+      "section", {className: "talk"},
+      elt("h2", null, talk.title, " ", elt("button", {
+	type: "button",
+	onclick() {
+          dispatch({type: "deleteTalk", talk: talk.title});
+	}
+      }, "Delete")),
+      elt("div", null, "by ",
+          elt("strong", null, talk.presenter)),
+      elt("p", null, talk.summary),
+      //this.commentsDOM,
+      ...talk.comments.map(renderComment),
+      elt("form", {
+	onsubmit(event) {
+          event.preventDefault();
+          let form = event.target;
+          dispatch({type: "newComment",
+                    talk: talk.title,
+                    message: form.elements.comment.value});
+          form.reset();
+	}
+      }, elt("input", {type: "text", name: "comment"}), " ",
+	  elt("button", {type: "submit"}, "Add comment")));
+  }
+  syncState(newTalk) {
+    /*****
+    TODO
+    *****/
+    console.log('Hello world');
+    // let newComment = renderComment(newTalk.comments[newTalk.comments.length - 1]);
+    // this.commentsDOM.appendChild(newComment);
+  }
+}
+
 class SkillShareApp {
   constructor(state, dispatch) {
     this.dispatch = dispatch;
@@ -142,10 +182,45 @@ class SkillShareApp {
                    renderUserField(state.user, dispatch),
                    this.talkDOM,
                    renderTalkForm(dispatch));
+    this.struct = {};
     this.syncState(state);
   }
-
   syncState(state) {
+    if (state.talks != this.talks) {
+      for (let talk of state.talks) {
+	//console.log(`talk.title: ${talk.title}`);
+	//console.log(`this.struct[talk.title]: ${this.struct[talk.title]}`);
+	//console.log(`this.struct: ${this.struct}`);
+	if (talk.title in this.struct) {
+	  /*****
+	  TODO
+	  *****/
+	  //this.struct[talk.title].syncState();
+	} else {
+	  let newTalk = new Talk(talk, this.dispatch);
+	  this.struct[talk.title] = newTalk;
+	  this.talkDOM.appendChild(newTalk.dom);
+	}
+      }
+
+      // check for talk components to remove
+      for (let title of Object.keys(this.struct)) {
+	let found = false;
+	for (let talk of state.talks) {
+	  if (talk.title === title)
+	    found = true;
+	}
+	if (!found) {
+	  this.struct[title].dom.remove();
+	  delete this.struct[title];
+	}
+      }
+
+      this.talks = state.talks;
+    }
+  }
+  /*
+     syncState(state) {
     if (state.talks != this.talks) {
       this.talkDOM.textContent = "";
       for (let talk of state.talks) {
@@ -155,6 +230,7 @@ class SkillShareApp {
       this.talks = state.talks;
     }
   }
+*/
 }
 
 function runApp() {
@@ -166,6 +242,8 @@ function runApp() {
   }
 
   pollTalks(talks => {
+    console.log('incoming talks from server:');
+    console.log(talks);
     if (!app) {
       state = {user, talks};
       app = new SkillShareApp(state, dispatch);
