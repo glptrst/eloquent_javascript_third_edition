@@ -137,8 +137,8 @@ async function pollTalks(update) {
 class Talk {
   constructor(talk, dispatch) {
     this.talk = talk;
-    // this.commentsDOM = elt("div", null,
-    // 			...talk.comments.map(renderComment));
+    this.commentsDOM = elt("div", {className: "comments"},
+     			   ...talk.comments.map(renderComment));
     this.dom = elt(
       "section", {className: "talk"},
       elt("h2", null, talk.title, " ", elt("button", {
@@ -150,8 +150,7 @@ class Talk {
       elt("div", null, "by ",
           elt("strong", null, talk.presenter)),
       elt("p", null, talk.summary),
-      //this.commentsDOM,
-      ...talk.comments.map(renderComment),
+      this.commentsDOM,
       elt("form", {
 	onsubmit(event) {
           event.preventDefault();
@@ -164,13 +163,12 @@ class Talk {
       }, elt("input", {type: "text", name: "comment"}), " ",
 	  elt("button", {type: "submit"}, "Add comment")));
   }
-  syncState(newTalk) {
-    /*****
-    TODO
-    *****/
-    console.log('Hello world');
-    // let newComment = renderComment(newTalk.comments[newTalk.comments.length - 1]);
-    // this.commentsDOM.appendChild(newComment);
+  syncState(talk) {
+    this.commentsDOM.textContent = "";
+    for (let comment of talk.comments) {
+      this.commentsDOM.appendChild(
+	renderComment(comment));
+    }
   }
 }
 
@@ -192,10 +190,7 @@ class SkillShareApp {
 	//console.log(`this.struct[talk.title]: ${this.struct[talk.title]}`);
 	//console.log(`this.struct: ${this.struct}`);
 	if (talk.title in this.struct) {
-	  /*****
-	  TODO
-	  *****/
-	  //this.struct[talk.title].syncState();
+	  this.struct[talk.title].syncState(talk);
 	} else {
 	  let newTalk = new Talk(talk, this.dispatch);
 	  this.struct[talk.title] = newTalk;
@@ -203,7 +198,6 @@ class SkillShareApp {
 	}
       }
 
-      // check for talk components to remove
       for (let title of Object.keys(this.struct)) {
 	let found = false;
 	for (let talk of state.talks) {
@@ -219,18 +213,6 @@ class SkillShareApp {
       this.talks = state.talks;
     }
   }
-  /*
-     syncState(state) {
-    if (state.talks != this.talks) {
-      this.talkDOM.textContent = "";
-      for (let talk of state.talks) {
-        this.talkDOM.appendChild(
-          renderTalk(talk, this.dispatch));
-      }
-      this.talks = state.talks;
-    }
-  }
-*/
 }
 
 function runApp() {
