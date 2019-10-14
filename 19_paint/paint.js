@@ -206,19 +206,34 @@ function draw(pos, state, dispatch) {
 }
 
 function line(pos, state, dispatch) {
-  let firstPoint, lastPoint; // first and last pixel drawn without releasing mouse
+  let startPoint, endPoint;
   function drawLine({ x, y }, state) {
     let drawn = { x, y, color: state.color };
-    if (!firstPoint)
-      firstPoint = drawn;
+    if (!startPoint)
+      startPoint = drawn;
     else
-      lastPoint = drawn;
-    
-    dispatch({ picture: state.picture.draw([drawn]) });
+      endPoint = drawn;
 
-    // compute pixels between the two extreme points
+    if (endPoint) {
+      if (Math.abs(startPoint.x - endPoint.x) >
+	  Math.abs(startPoint.y - endPoint.y)) { //horizontalish line
+	if (startPoint.x > endPoint.x)
+	  ;
+	else
+	  ;
+	/* todo */
+	/* **** */
+      } else { //verticalish line
+	if (startPoint.y > endPoint.y)
+	  ;
+	else
+	  ;
+	/* todo */
+	/* **** */
+      }
+    }
 
-    // draw pixels
+    //dispatch({ picture: state.picture.draw(line) });
   }
   drawLine(pos, state);
   return drawLine;
