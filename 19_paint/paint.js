@@ -212,7 +212,6 @@ function draw(pos, state, dispatch) {
 //   y = y1 + dy * (x - x1) / dx
 //   plot(x, y)
 // }
-
 function line(pos, state, dispatch) {
   let startPoint, endPoint;
   function drawLine({x, y}) {
@@ -226,12 +225,11 @@ function line(pos, state, dispatch) {
 	  Math.abs(startPoint.y - endPoint.y)) { //horizontalish line
 	
 	if (startPoint.x > endPoint.x) { 
-	  // start and end are swapped
+	  // swap start and end
 	  let dx = startPoint.x - endPoint.x;
 	  let dy = startPoint.y - endPoint.y;
 	  for (let x = endPoint.x; x <= startPoint.x; x++) {
 	    let y = Math.floor(endPoint.y + dy * (x - endPoint.x) / dx);
-	    if (isNaN(y)) y = 0;
 	    line.push({x, y, color: state.color});
 	  }
 	}
@@ -240,33 +238,28 @@ function line(pos, state, dispatch) {
 	  let dy = endPoint.y - startPoint.y;
 	  for (let x = startPoint.x; x <= endPoint.x; x++) {
 	    let y = Math.floor(startPoint.y + dy * (x - startPoint.x) / dx);
-	    if (isNaN(y)) y = 0;
 	    line.push({x, y, color: state.color});
 	  }
 	}
-	
       } else { //verticalish line
 	if (startPoint.y > endPoint.y) {
-	  // start and end are swapped
+	  // swap start and end
 	  let dx = startPoint.x - endPoint.x;
 	  let dy = startPoint.y - endPoint.y;
-	  for (let x = endPoint.x; x <= startPoint.x; x++) {
-	    let y = Math.floor(endPoint.y + dy * (x - endPoint.x) / dx);
-	    if (isNaN(y)) y = 0;
+	  for (let y = endPoint.y; y <= startPoint.y; y++) {
+	    let x = Math.floor(endPoint.x + dx * (y - endPoint.y) / dy);
 	    line.push({x, y, color: state.color});
 	  }
 	} else {
 	  let dx = endPoint.x - startPoint.x;
 	  let dy = endPoint.y - startPoint.y;
-	  for (let x = startPoint.x; x <= endPoint.x; x++) {
-	    let y = Math.floor(startPoint.y + dy * (x - startPoint.x) / dx);
-	    if (isNaN(y)) y = 0;
+	  for (let y = startPoint.y; y <= endPoint.y; y++) {
+	    let x = Math.floor(startPoint.x + dx * (y - startPoint.y) / dy);
 	    line.push({x, y, color: state.color});
 	  }
 	}
       }
     }
-    //dispatch({ picture: state.picture.draw([{ x, y, color: state.color }]) });
     dispatch({ picture: state.picture.draw(line) });
   }
   drawLine(pos);
