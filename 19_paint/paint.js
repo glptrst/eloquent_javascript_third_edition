@@ -205,14 +205,15 @@ function draw(pos, state, dispatch) {
   return drawPixel;
 }
 
-// From Wikipedia:
-// dx = x2 - x1
-// dy = y2 - y1
-// for x from x1 to x2 {
-//   y = y1 + dy * (x - x1) / dx
-//   plot(x, y)
-// }
+
 function line(pos, state, dispatch) {
+  // ``naive algorithm'' from Wikipedia:
+  // dx = x2 - x1
+  // dy = y2 - y1
+  // for x from x1 to x2 {
+  //   y = y1 + dy * (x - x1) / dx
+  //   plot(x, y)
+  // }
   let startPoint, endPoint;
   function drawLine({x, y}) {
     let line = [];
@@ -265,67 +266,6 @@ function line(pos, state, dispatch) {
   drawLine(pos);
   return drawLine;
 }
-
-function lineOLD(pos, state, dispatch) {
-  let startPoint, endPoint;
-  function drawLine({ x, y }, state) {
-    let line = [];
-    let drawn = { x, y, color: state.color };
-    if (!startPoint)
-      startPoint = drawn;
-    else
-      endPoint = drawn;
-
-    if (endPoint) {
-      if (Math.abs(startPoint.x - endPoint.x) >
-	  Math.abs(startPoint.y - endPoint.y)) { //horizontalish line
-	if (startPoint.x > endPoint.x)
-	  [startPoint, endPoint] = [endPoint, startPoint];
-
-	console.log(startPoint, endPoint);
-
-	dispatch({ picture: state.picture.draw([drawn]) });
-	// draw line
-
-	// let dx = endPoint.x - startPoint.x;
-	// let dy = endPoint.y - startPoint.y;
-	// for (let x = startPoint.x; x <= endPoint.x; x++) {
-	//   let y = Math.floor(startPoint.y + dy * (x - startPoint.x) / dx);
-	//   if (isNaN(y)) y = 0;
-	//   line.push({x, y, color: state.color});
-	// }
-	
-      } else { //verticalish line
-	if (startPoint.y > endPoint.y)
-	  [startPoint, endPoint] = [endPoint, startPoint];
-	
-	console.log(startPoint, endPoint);
-
-	dispatch({ picture: state.picture.draw([drawn]) });
-	// let line = [];
-
-	// let dx = endPoint.x - startPoint.x;
-	// let dy = endPoint.y - startPoint.y;
-	// for (let x = startPoint.x; x <= endPoint.x; x++) {
-	//   let y = Math.floor(startPoint.y + dy * (x - startPoint.x) / dx);
-	//   if (isNaN(y)) y = 0;
-	//   line.push({x, y, color: state.color});
-	// }
-
-	// dispatch({ picture: state.picture.draw(line) });
-      }
-    }
-    //dispatch({ picture: state.picture.draw(line) });
-  }
-  drawLine(pos, state);
-  return drawLine;
-}
-
-// compute slope
-function slp(start, end) { 
-  //return (start.y - end.y) / (start.x - end.x);
-  return (end.y - start.y) / (end.x - start.x);
-} 
 
 function rectangle(start, state, dispatch) {
   function drawRectangle(pos) {
